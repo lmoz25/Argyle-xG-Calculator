@@ -26,9 +26,9 @@ def getData():
 
     '''
     #bring in shot data from both sources and combine
-    shotData = pd.read_csv("Shots.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result'])
-    shotData = shotData.append(pd.read_csv("xG_database_2018_19 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
-    shotData = shotData.append(pd.read_csv("xG_database_2017_18 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
+    shotData = pd.read_csv("../Data/Shots.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result'])
+    shotData = shotData.append(pd.read_csv("../Data/xG_database_2018_19 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
+    shotData = shotData.append(pd.read_csv("../Data/xG_database_2017_18 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
     #turn data into something the SVM can actually use
     shotData['Foot'].replace(['S','W','H','O'],[0,1,2,3],inplace = True)
     shotData['Assist'].replace(['O','S','F','C','P','D','R'],[0,1,2,3,4,5,6],inplace = True)
