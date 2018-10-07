@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
 from sklearn.decomposition import PCA
+from os import listdir
 
 def pca_transform(data, nComponents=None):
     pca = PCA(n_components=nComponents)
@@ -20,15 +21,22 @@ def kFoldValidationScore(X, t, model, nFolds):
 def getData():
 
     ''' 
-    Function to extract shot data from Shots.csv and xG database - Sheet1.csv.\n
-    Input: flag whether result field should distinguish between different types of misses (mixed) or not (simple)\n
+    Function to extract shot data from CSV files stored in /Data to train models with.\n
+    Input: None\n
     Returns: Tuple (X,t)
 
     '''
-    #bring in shot data from both sources and combine
-    shotData = pd.read_csv("../Data/Shots.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result'])
-    shotData = shotData.append(pd.read_csv("../Data/xG_database_2018_19 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
-    shotData = shotData.append(pd.read_csv("../Data/xG_database_2017_18 - Data.csv", usecols=['Zone', 'Foot', 'Assist', 'Marking', 'Result']), ignore_index=True)
+
+    keys = ['Zone', 'Foot','Assist', 'Marking', 'Result']
+    shotData = pd.DataFrame(data=dict.fromkeys(keys,None), index=[0])
+
+    for fl in listdir("../Data"):
+        print(fl)
+        if fl.endswith('.csv'):
+            shotData = shotData.append(pd.read_csv("../Data/" + fl, usecols=keys), ignore_index=True)
+    
+    shotData = shotData.drop(shotData.index[0])
+    
     #turn data into something the SVM can actually use
     shotData['Foot'].replace(['S','W','H','O'],[0,1,2,3],inplace = True)
     shotData['Assist'].replace(['O','S','F','C','P','D','R'],[0,1,2,3,4,5,6],inplace = True)
